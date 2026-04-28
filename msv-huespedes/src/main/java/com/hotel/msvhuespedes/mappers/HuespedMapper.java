@@ -24,7 +24,7 @@ public class HuespedMapper {
                 .build();
     }
 
-    public HuespedResponse  responseAEntidad(Huesped entidad){
+    public HuespedResponse  entidadAResponse(Huesped entidad){
         if(entidad == null) return null;
 
         return new HuespedResponse(

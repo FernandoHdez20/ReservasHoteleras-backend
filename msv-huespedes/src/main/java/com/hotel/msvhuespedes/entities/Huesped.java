@@ -42,4 +42,18 @@ public class Huesped {
     @Enumerated(EnumType.STRING)
     @Column(name = "ESTADO_REGISTRO", nullable = false,  length = 30)
     private EstadoRegistro estadoRegistro;
+
+    public void actualizar(String nombre, String apellidoPaterno, String apellidoMaterno, String email, String telefono, String documento, String nacionalidad) {
+        this.nombre = nombre;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
+        this.email = email;
+        this.telefono = telefono;
+        this.documento = documento;
+        this.nacionalidad = nacionalidad;
+    }
+
+    public void eliminar(){
+        this.estadoRegistro = EstadoRegistro.ELIMINADO;
+    }
 }
