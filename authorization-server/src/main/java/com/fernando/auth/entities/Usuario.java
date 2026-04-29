@@ -46,4 +46,9 @@ public class Usuario {
             inverseJoinColumns = @JoinColumn(name = "ID_ROL")
     )
     private Set<Rol> roles;
+
+    public void actualizar(String password, Set<Rol> roles) {
+        this.password = password;
+        this.roles = roles;
+    }
 }
