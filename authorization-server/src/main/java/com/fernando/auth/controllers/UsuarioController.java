@@ -27,6 +27,7 @@ public class UsuarioController {
 
     @GetMapping
     public ResponseEntity<Set<UsuarioResponse>> listar() {
+
         return ResponseEntity.ok(usuarioService.listar());
     }
 
