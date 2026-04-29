@@ -40,6 +40,27 @@ public class HabitacionServiceImpl implements HabitacionService{
     }
 
     @Override
+    public HabitacionResponse obtenerPorIdHabitacionSinEstado(Long id) {
+        return habitacionMapper.entidadAResponse(habitacionRepository.findById(id).orElseThrow(()->
+                new RecursoNoEncontradoException("Habitacion sin estado no encontrado con el id: " + id)));
+    }
+
+
+    @Override
+    public void actualizarEstadoHabitacion(Long id, Long idEstadoHabitacion) {
+        Habitacion habitacion = obtenerHabitacionActivaOException(id);
+
+        log.info("Actualizando estado de la habitación: {}", habitacion.getId());
+
+        EstadoHabitacion estadoHabitacion = EstadoHabitacion.obtenerEstadoHabitacionPorCodigo(idEstadoHabitacion);
+
+        habitacion.actualizarEstadoHabitacion(estadoHabitacion);
+
+        log.info("Estado de la habitación {} actualizado correctamente",habitacion.getId());
+
+    }
+
+    @Override
     public HabitacionResponse registrar(HabitacionRequest request) {
         log.info("Registrando nueva habitacion...");
 
@@ -59,6 +80,7 @@ public class HabitacionServiceImpl implements HabitacionService{
     public HabitacionResponse actualizar(HabitacionRequest request, Long id) {
         Habitacion habitacion = obtenerHabitacionActivaOException(id);
 
+
         validarActualizarUnicos(request, EstadoRegistro.ACTIVO, id);
 
         habitacion.actualizar(
@@ -76,13 +98,16 @@ public class HabitacionServiceImpl implements HabitacionService{
 
     @Override
     public void eliminar(Long id) {
-        Habitacion habitacion = obtenerHabitacionOException(id);
+        log.info("Eliminando habitacion con id: {}", id);
+        Habitacion habitacion = obtenerHabitacionActivaOException(id);
 
+        habitacion.eliminar();
+        log.info("Habitación con id {} ha sido eliminada", id);
 
     }
 
     private Habitacion obtenerHabitacionOException(Long id) {
-        log.info("Buscando habitacion con el id {}");
+        log.info("Buscando habitación con id {}", id);
         return habitacionRepository.findById(id).orElseThrow(() ->
                 new RecursoNoEncontradoException("Habitacion no encontrada con el id " + id));
     }
@@ -100,12 +125,10 @@ public class HabitacionServiceImpl implements HabitacionService{
         }
     }
 
-    private void validarActualizarUnicos(HabitacionRequest request, EstadoRegistro estado, Long id) {
+    private void validarActualizarUnicos(HabitacionRequest request, EstadoRegistro estadoRegistro, Long id) {
          if (habitacionRepository.existsByNumeroAndEstadoRegistroAndIdNot(request.numero(), EstadoRegistro.ACTIVO, id))
             throw new IllegalArgumentException("Ya existe una habitacion registrada con el número: " + request.numero());
     }
-
-
 
 
 }
