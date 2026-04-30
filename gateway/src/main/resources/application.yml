@@ -15,10 +15,10 @@ security:
       server:
         webflux:
           routes:
-            - id: msv-pacientes
-              uri: lb://msv-pacientes
+            - id: msv-huespedes
+              uri: lb://msv-huespedes
               predicates:
-                - Path=/api/pacientes/**
+                - Path=/api/huespedes/**
               filters:
                 - StripPrefix=2
 
