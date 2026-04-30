@@ -6,7 +6,8 @@ public record HuespedResponse(
         String email,
         String teléfono,
         String documento,
-        String nacionalidad
+        String nacionalidad,
+        String estadoRegistro
 ) {
 
 }

@@ -31,7 +31,7 @@ public class HuespedServiceImpl implements HuespedService {
     }
 
     @Override
-    public HuespedResponse obtenerPorId(long id) {
+    public HuespedResponse obtenerPorId(Long id) {
         return huespedMapper.entidadAResponse(obtenerHuespedActivoOException(id));
     }
 
@@ -57,7 +57,7 @@ public class HuespedServiceImpl implements HuespedService {
     }
 
     @Override
-    public HuespedResponse actualizar(HuespedRequest request, long id) {
+    public HuespedResponse actualizar(HuespedRequest request, Long id) {
         Huesped huesped = obtenerHuespedActivoOException(id);
 
         validarUnicidadActualizar(request, id);
