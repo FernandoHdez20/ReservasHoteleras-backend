@@ -37,7 +37,9 @@ public class HuespedMapper {
                 entidad.getEmail(),
                 entidad.getTelefono(),
                 entidad.getDocumento(),
-                entidad.getNacionalidad()
+                entidad.getNacionalidad(),
+                entidad.getEstadoRegistro().name()
         );
     }
 }
+

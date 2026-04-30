@@ -1,7 +1,9 @@
 package com.fernando.reservas.services;
 
 import com.fernando.commons.clients.HabitacionClient;
+import com.fernando.commons.clients.HuespedClient;
 import com.fernando.commons.dto.HabitacionResponse;
+import com.fernando.commons.dto.HuespedResponse;
 import com.fernando.commons.dto.ReservasRequest;
 import com.fernando.commons.dto.ReservasResponse;
 import com.fernando.commons.enums.EstadoHabitacion;
@@ -30,7 +32,7 @@ public class ReservasServiceImpl implements ReservasService{
     private final ReservasRepository reservasRepository;
     private final ReservasMapper reservasMapper;
     private final HabitacionClient habitacionClient;
-
+    private final HuespedClient huespedClient;
     @Override
     @Transactional(readOnly = true)
     public List<ReservasResponse> listar() {
@@ -54,7 +56,7 @@ public class ReservasServiceImpl implements ReservasService{
         validarFechas(request);
 
         // 2. Validar que el huésped existe y está ACTIVO
-        //validarHuespedActivo(request.idHuesped());
+        validarHuespedActivo(request.idHuesped());
 
         // 3. Validar habitación existe y está DISPONIBLE
         validarHabitacionDisponible(request.idHabitacion());
@@ -165,14 +167,12 @@ public class ReservasServiceImpl implements ReservasService{
     }
 
     //valida que el huésped exista y esté ACTIVO
-    /*
     private void validarHuespedActivo(Long idHuesped) {
         log.info("Validando huésped con id {}", idHuesped);
 
-        HuespedResponse huesped;
-        try {
-            huesped = huespedClient.obtenerHuesped(idHuesped);
-        } catch (Exception e) {
+        HuespedResponse huesped = huespedClient.obtenerPorId(idHuesped);
+
+        if (huesped == null) {
             throw new RecursoNoEncontradoException("El huésped no existe con id " + idHuesped);
         }
 
@@ -180,8 +180,6 @@ public class ReservasServiceImpl implements ReservasService{
             throw new IllegalStateException("El huésped no está activo");
         }
     }
-
-     */
 
     private void validarHabitacionDisponible(Long idHabitacion) {
         HabitacionResponse habitacion;
