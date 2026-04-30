@@ -38,7 +38,8 @@ public class HabitacionMapper implements CommonMapper<HabitacionRequest, Habitac
                 entidad.getTipo(),
                 entidad.getPrecio(),
                 entidad.getCapacidad(),
-                entidad.getEstadoHabitacion().getDescripcion()
+                entidad.getEstadoHabitacion().getDescripcion(),
+                entidad.getEstadoRegistro().name()
         );
     }
 }
