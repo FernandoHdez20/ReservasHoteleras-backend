@@ -123,7 +123,6 @@ public class ReservasServiceImpl implements ReservasService{
         log.info("actualizando reservacion con id {} ", id);
 
         EstadoReserva estado = reservas.getEstadoReserva();
-
         if (estado == EstadoReserva.FINALIZADA || estado == EstadoReserva.CANCELADA)
             throw new IllegalStateException("No se puede actualizar una reservación " + estado);
 
@@ -139,7 +138,6 @@ public class ReservasServiceImpl implements ReservasService{
 
             reservas.actualizarFechas(
                     request.fechaSalida());
-
             return reservasMapper.entidadAResponse(reservas,
                     obtenerHuespedActivo(reservas.getIdHuesped()),
                     obtenerHabitacionActivo(reservas.getIdHabitacion()));
@@ -186,15 +184,13 @@ public class ReservasServiceImpl implements ReservasService{
         reservas.eliminar();
 
         if (reservas.getEstadoReserva() == EstadoReserva.CONFIRMADA) {
-            cambiarEstadoHabitacion(
-                    reservas.getIdHabitacion(),
-                    EstadoHabitacion.DISPONIBLE.getCodigo()
-            );
+            habitacionClient.liberarHabitacion(reservas.getIdHabitacion());
         }
-
         log.info("La reservación con id {} ha sido eliminada exitosamente", id);
 
     }
+
+
 
 
     private Reserva obtenerReservacionOException(Long id){

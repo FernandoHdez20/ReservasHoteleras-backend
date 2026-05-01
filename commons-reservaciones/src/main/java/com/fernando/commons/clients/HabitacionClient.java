@@ -23,5 +23,8 @@ public interface HabitacionClient {
             @PathVariable Long estado
     );
 
+    @PutMapping("/{id}/liberar")
+    void liberarHabitacion(@PathVariable Long id);
+
 }
 
