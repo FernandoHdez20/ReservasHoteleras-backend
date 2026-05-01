@@ -1,5 +1,6 @@
 package com.fernando.habitaciones.services;
 
+import com.fernando.commons.clients.ReservasClient;
 import com.fernando.commons.dto.HabitacionRequest;
 import com.fernando.commons.dto.HabitacionResponse;
 import com.fernando.commons.enums.EstadoHabitacion;
@@ -23,6 +24,7 @@ public class HabitacionServiceImpl implements HabitacionService{
 
     private final HabitacionRepository habitacionRepository;
     private final HabitacionMapper habitacionMapper;
+    private final ReservasClient reservasClient;
 
     @Override
     @Transactional(readOnly = true)
@@ -101,6 +103,8 @@ public class HabitacionServiceImpl implements HabitacionService{
         log.info("Eliminando habitacion con id: {}", id);
         Habitacion habitacion = obtenerHabitacionActivaOException(id);
 
+        habitacionTieneReservaciones(id);
+
         habitacion.eliminar();
         log.info("Habitación con id {} ha sido eliminada", id);
 
@@ -130,5 +134,8 @@ public class HabitacionServiceImpl implements HabitacionService{
             throw new IllegalArgumentException("Ya existe una habitacion registrada con el número: " + request.numero());
     }
 
+    private void habitacionTieneReservaciones(Long id){
+        reservasClient.habitacionTieneReservacionesAsignadas(id);
+    }
 
 }

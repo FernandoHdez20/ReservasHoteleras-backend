@@ -1,5 +1,6 @@
 package com.hotel.msvhuespedes.services;
 
+import com.fernando.commons.clients.ReservasClient;
 import com.fernando.commons.dto.HuespedRequest;
 import com.fernando.commons.dto.HuespedResponse;
 import com.fernando.commons.enums.EstadoRegistro;
@@ -124,5 +125,7 @@ public class HuespedServiceImpl implements HuespedService {
     }
 
     private void huespedTieneReservaciones(Long id) {
+
+        //reservasClient.huespedTieneReservacionesAsignada(id);
     }
 }

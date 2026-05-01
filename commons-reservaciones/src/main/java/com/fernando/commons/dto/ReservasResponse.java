@@ -6,8 +6,8 @@ import java.util.Date;
 
 public record ReservasResponse(
         Long id,
-        DatosHuesped  idHuesped,
-        DatosHabitacion idHabitacion,
+        DatosHuesped  huesped,
+        DatosHabitacion habitacion,
         Date fechaEntrada,
         Date fechaSalida,
         String estadoReserva
