@@ -19,6 +19,7 @@ public class HuespedMapper {
                 .email(request.email())
                 .telefono(request.telefono())
                 .documento(request.documento())
+                .tipoDocumento(request.tipoDocumento())
                 .nacionalidad(request.nacionalidad())
                 .estadoRegistro(EstadoRegistro.ACTIVO)
                 .build();
@@ -29,16 +30,14 @@ public class HuespedMapper {
 
         return new HuespedResponse(
                 entidad.getId(),
-                String.join( " ",
-                        entidad.getNombre(),
-                        entidad.getApellidoPaterno(),
-                        entidad.getApellidoMaterno()
-                ),
+                entidad.getNombre(),
+                entidad.getApellidoPaterno(),
+                entidad.getApellidoMaterno(),
                 entidad.getEmail(),
                 entidad.getTelefono(),
                 entidad.getDocumento(),
-                entidad.getNacionalidad(),
-                entidad.getEstadoRegistro().name()
+                entidad.getTipoDocumento(),
+                entidad.getNacionalidad()
         );
     }
 }

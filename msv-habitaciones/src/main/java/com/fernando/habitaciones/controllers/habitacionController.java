@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Validated
-public class HabitacionController extends CommonController<HabitacionRequest, HabitacionResponse, HabitacionService> {
+public class habitacionController extends CommonController<HabitacionRequest, HabitacionResponse, HabitacionService> {
 
 
-    public HabitacionController(HabitacionService service) {
+    public habitacionController(HabitacionService service) {
 
         super(service);
     }
@@ -37,7 +37,5 @@ public class HabitacionController extends CommonController<HabitacionRequest, Ha
         service.actualizarEstadoHabitacion(id, idEstado);
         return ResponseEntity.noContent().build();
     }
-
-
 
 }
