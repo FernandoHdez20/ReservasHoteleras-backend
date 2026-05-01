@@ -69,6 +69,7 @@ public class HuespedServiceImpl implements HuespedService {
                 request.email(),
                 request.telefono(),
                 request.documento(),
+                request.tipoDocumento(),
                 request.nacionalidad()
         );
 

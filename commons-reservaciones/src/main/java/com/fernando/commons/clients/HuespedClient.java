@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "msv-huespedes")
 public interface HuespedClient {
 
-    @GetMapping("/{idHuesped}")
+    @GetMapping("/huespedes/{idHuesped}")
     HuespedResponse obtenerPorId(@PathVariable Long idHuesped);
 
-    @GetMapping("/id-huespedes/{id}")
+    @GetMapping("/huespedes/id-huespedes/{id}")
     HuespedResponse obtenerPorIdTodos(@PathVariable Long id);
 }

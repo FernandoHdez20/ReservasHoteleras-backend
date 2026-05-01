@@ -1,6 +1,7 @@
 package com.hotel.msvhuespedes.entities;
 
 import com.fernando.commons.enums.EstadoRegistro;
+import com.fernando.commons.enums.TipoDocumento;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,10 @@ public class Huesped {
     @Column(name = "DOCUMENTO", nullable = false, length = 50)
     private String documento;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TIPO_DOCUMENTO", nullable = false, length = 50)
+    private TipoDocumento tipoDocumento;
+
     @Column(name = "NACIONALIDAD", nullable = false, length = 20)
     private String nacionalidad;
 
@@ -43,13 +48,14 @@ public class Huesped {
     @Column(name = "ESTADO_REGISTRO", nullable = false,  length = 30)
     private EstadoRegistro estadoRegistro;
 
-    public void actualizar(String nombre, String apellidoPaterno, String apellidoMaterno, String email, String telefono, String documento, String nacionalidad) {
+    public void actualizar(String nombre, String apellidoPaterno, String apellidoMaterno, String email, String telefono, String documento, TipoDocumento tipoDocumento, String nacionalidad) {
         this.nombre = nombre;
         this.apellidoPaterno = apellidoPaterno;
         this.apellidoMaterno = apellidoMaterno;
         this.email = email;
         this.telefono = telefono;
         this.documento = documento;
+        this.tipoDocumento = tipoDocumento;
         this.nacionalidad = nacionalidad;
     }
 

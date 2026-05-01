@@ -1,5 +1,6 @@
 package com.fernando.commons.dto;
 
+import com.fernando.commons.enums.TipoDocumento;
 import jakarta.validation.constraints.*;
 
 public record HuespedRequest(
@@ -27,6 +28,9 @@ public record HuespedRequest(
         @NotBlank(message = "El documento es necesario")
         @Size(min = 5, max = 50, message = "El documento debe tener entre 5 y 50 caracterés")
         String documento,
+
+        @NotNull(message = "El documento es necesario")
+        TipoDocumento tipoDocumento,
 
         @NotBlank(message = "La nacionalidad es necesario")
         @Size(min = 2, max = 30, message = "La nacionalidad debe tener entre 2 y 20 caracterés")
