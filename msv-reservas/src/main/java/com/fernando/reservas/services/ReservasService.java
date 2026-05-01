@@ -13,4 +13,5 @@ public interface ReservasService extends CrudService<ReservasRequest, ReservasRe
     void actualizarEstadoReservacion(Long idReservas, Long idEstadoReservacion);
     void huespedTieneReservacionesAsignadas(Long idAHuesped);
     void habitacionTieneReservacionAsignadas(Long idHabitacion);
+
 }

@@ -58,9 +58,10 @@ public class Habitacion {
         this.estadoRegistro = EstadoRegistro.ELIMINADO;
     }
 
+
     public void actualizarEstadoHabitacion(EstadoHabitacion nuevoEstado) {
 
-        if (this.estadoHabitacion == EstadoHabitacion.OCUPADA &&
+        if (this.estadoHabitacion == EstadoHabitacion.DISPONIBLE &&
                 nuevoEstado != EstadoHabitacion.OCUPADA) {
 
             throw new IllegalArgumentException(
@@ -70,6 +71,16 @@ public class Habitacion {
 
         this.estadoHabitacion = nuevoEstado;
     }
+
+    public void liberarHabitacion() {
+        this.estadoHabitacion = EstadoHabitacion.DISPONIBLE;
+    }
+
+
+
+
+
+
 }
 
 

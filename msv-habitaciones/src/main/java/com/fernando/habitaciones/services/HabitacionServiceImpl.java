@@ -110,6 +110,12 @@ public class HabitacionServiceImpl implements HabitacionService{
 
     }
 
+    @Override
+    public void liberarHabitacion(Long id) {
+        Habitacion habitaciones = obtenerHabitacionOException(id);
+        habitaciones.liberarHabitacion();
+    }
+
     private Habitacion obtenerHabitacionOException(Long id) {
         log.info("Buscando habitación con id {}", id);
         return habitacionRepository.findById(id).orElseThrow(() ->
