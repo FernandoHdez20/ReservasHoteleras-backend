@@ -82,9 +82,35 @@ public class Reserva {
         this.fechaSalida = fechaSalida;
     }
 
-    public void actualizarEstadoReservacion(EstadoReserva estadoReserva) {
-        this.estadoReserva = estadoReserva;
+
+    public void actualizarEstadoReservacion(EstadoReserva nuevoEstado) {
+        switch (this.estadoReserva) {
+            case CONFIRMADA -> {
+                if (!(nuevoEstado.equals(EstadoReserva.EN_CURSO)
+                        || nuevoEstado.equals(EstadoReserva.CANCELADA)
+                        || nuevoEstado.equals(EstadoReserva.CONFIRMADA)))
+                    throw new IllegalStateException(
+                            "La reservación con estado " + this.estadoReserva
+                                    + " solo puede cambiar a " + EstadoReserva.EN_CURSO
+                                    + " o " + estadoReserva.CANCELADA);
+            }
+            case EN_CURSO -> {
+                if (!(nuevoEstado.equals(EstadoReserva.FINALIZADA)
+                        || nuevoEstado.equals(EstadoReserva.EN_CURSO)))
+                    throw new IllegalStateException(
+                            "La reservación con estado " + this.estadoReserva
+                                    + " solo puede cambiar a " + EstadoReserva.FINALIZADA);
+            }
+            case FINALIZADA, CANCELADA -> {
+                if (!nuevoEstado.equals(this.estadoReserva))
+                    throw new IllegalStateException(
+                            "La reservación en estado " + this.estadoReserva
+                                    + " no puede cambiar de estado");
+            }
+        }
+        this.estadoReserva = nuevoEstado;
     }
+
 }
 
 
