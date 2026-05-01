@@ -1,7 +1,9 @@
 package com.fernando.reservas.services;
 
 import com.fernando.commons.clients.HabitacionClient;
+import com.fernando.commons.clients.HuespedClient;
 import com.fernando.commons.dto.HabitacionResponse;
+import com.fernando.commons.dto.HuespedResponse;
 import com.fernando.commons.dto.ReservasRequest;
 import com.fernando.commons.dto.ReservasResponse;
 import com.fernando.commons.enums.EstadoHabitacion;
@@ -30,7 +32,7 @@ public class ReservasServiceImpl implements ReservasService{
     private final ReservasRepository reservasRepository;
     private final ReservasMapper reservasMapper;
     private final HabitacionClient habitacionClient;
-
+    private final HuespedClient huespedClient;
     @Override
     @Transactional(readOnly = true)
     public List<ReservasResponse> listar() {
@@ -54,7 +56,7 @@ public class ReservasServiceImpl implements ReservasService{
         validarFechas(request);
 
         // 2. Validar que el huésped existe y está ACTIVO
-        //validarHuespedActivo(request.idHuesped());
+        validarHuespedActivo(request.idHuesped());
 
         // 3. Validar habitación existe y está DISPONIBLE
         validarHabitacionDisponible(request.idHabitacion());
@@ -78,7 +80,19 @@ public class ReservasServiceImpl implements ReservasService{
     public ReservasResponse actualizar(ReservasRequest request, Long id) {
         Reserva reserva = obtenerReservaOException(id);
         log.info("Actualizando reserva con id: {}", id);
+
+        //No permitir cambio de habitación (regla global)
+        if (request.idHabitacion() != null &&
+                !request.idHabitacion().equals(reserva.getIdHabitacion())) {
+            throw new IllegalStateException("No se permite cambiar la habitación en una reserva existente");
+        }
+
+        // Validar según estado
         validarActualizacionSegunEstado(reserva, request);
+
+        // Guardar cambios
+        reservasRepository.save(reserva);
+
         return reservasMapper.entidadAResponse(reserva);
     }
 
@@ -165,14 +179,12 @@ public class ReservasServiceImpl implements ReservasService{
     }
 
     //valida que el huésped exista y esté ACTIVO
-    /*
     private void validarHuespedActivo(Long idHuesped) {
         log.info("Validando huésped con id {}", idHuesped);
 
-        HuespedResponse huesped;
-        try {
-            huesped = huespedClient.obtenerHuesped(idHuesped);
-        } catch (Exception e) {
+        HuespedResponse huesped = huespedClient.obtenerPorId(idHuesped);
+
+        if (huesped == null) {
             throw new RecursoNoEncontradoException("El huésped no existe con id " + idHuesped);
         }
 
@@ -180,8 +192,6 @@ public class ReservasServiceImpl implements ReservasService{
             throw new IllegalStateException("El huésped no está activo");
         }
     }
-
-     */
 
     private void validarHabitacionDisponible(Long idHabitacion) {
         HabitacionResponse habitacion;
@@ -207,22 +217,59 @@ public class ReservasServiceImpl implements ReservasService{
         habitacionClient.actualizarEstadoHabitacion(idHabitacion, EstadoHabitacion.DISPONIBLE.getCodigo());
     }
 
+    private HuespedResponse obtenerHuespedActivo(Long id) {
+        log.info("Buscando médico activo con id {} en el servicio remoto", id);
+        return huespedClient.obtenerPorId(id);
+
+    }
+
+    private HuespedResponse obtenerHuespedSinEstado(Long id) {
+        log.info("Buscando médico sin estado con id {} en el servicio remoto", id);
+        return huespedClient.obtenerPorIdTodos(id);
+
+    }
+
     private void validarActualizacionSegunEstado(Reserva reserva, ReservasRequest request) {
+
         switch (reserva.getEstadoReserva()) {
+
             case CONFIRMADA -> {
+                //Se pueden modificar ambas fechas
                 validarFechas(request);
+
                 reserva.setFechaEntrada(request.fechaEntrada());
                 reserva.setFechaSalida(request.fechaSalida());
             }
+
             case EN_CURSO -> {
-                //Solo fecha de salida, sin validar fechaEntrada
+
+                // No permitir modificar fecha de entrada
+                if (request.fechaEntrada() != null &&
+                        !request.fechaEntrada().equals(reserva.getFechaEntrada())) {
+                    throw new IllegalStateException(
+                            "No se puede modificar la fecha de entrada en una reserva EN_CURSO"
+                    );
+                }
+
+                //Validar que venga fecha de salida
                 if (request.fechaSalida() == null) {
                     throw new IllegalArgumentException("La fecha de salida es requerida");
                 }
+
+                // Validar coherencia de fechas
+                if (!reserva.getFechaEntrada().before(request.fechaSalida())) {
+                    throw new IllegalArgumentException(
+                            "La fecha de salida debe ser posterior a la fecha de entrada"
+                    );
+                }
+
                 reserva.setFechaSalida(request.fechaSalida());
             }
+
             case FINALIZADA, CANCELADA ->
-                    throw new IllegalStateException("No se puede modificar una reserva en estado " + reserva.getEstadoReserva());
+                    throw new IllegalStateException(
+                            "No se puede modificar una reserva en estado " + reserva.getEstadoReserva()
+                    );
         }
     }
 }
