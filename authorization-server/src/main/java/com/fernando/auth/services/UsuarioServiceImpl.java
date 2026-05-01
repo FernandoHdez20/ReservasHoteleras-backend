@@ -1,6 +1,7 @@
 package com.fernando.auth.services;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -61,10 +62,34 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    public UsuarioResponse actualizar(UsuarioRequest request, String username) {
+        log.info("Buscando usuario {} para actualizar", username);
+        Usuario usuario = obtenerUsuarioOException(username);
+
+        Set<Rol> roles = request.roles().stream().map(rol ->
+                rolRepository.findByNombre(rol).orElseThrow(() ->
+                        new NoSuchElementException("Rol " + rol + " no encontrado"))
+        ).collect(Collectors.toSet());
+
+        usuario.actualizar(
+                passwordEncoder.encode(request.password()),
+                roles
+        );
+        return usuarioMapper.entityToResponse(usuario);
+    }
+
+    @Override
     public UsuarioResponse eliminar(String username) {
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException("No se encontró el usuario: " + username));
         usuarioRepository.delete(usuario);
         return usuarioMapper.entityToResponse(usuario);
     }
+
+    private Usuario obtenerUsuarioOException(String username) {
+        log.info("Buscando usuario: {}", username);
+        return usuarioRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("Usuario no encontrado con id: " + username));
+    }
+
 }
