@@ -1,5 +1,6 @@
 package com.fernando.commons.clients;
 
+import com.fernando.commons.dto.HabitacionResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -11,9 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "msv-huespedes")
 public interface HuespedClient {
 
-    @GetMapping("/huespedes/{idHuesped}")
+    @GetMapping("/{idHuesped}")
     HuespedResponse obtenerPorId(@PathVariable Long idHuesped);
 
-    @GetMapping("/huespedes/id-huespedes/{id}")
+    @GetMapping("/id-huespedes/{id}")
     HuespedResponse obtenerPorIdTodos(@PathVariable Long id);
 }
