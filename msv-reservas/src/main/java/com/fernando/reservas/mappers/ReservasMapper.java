@@ -1,8 +1,8 @@
 package com.fernando.reservas.mappers;
 
 
-import com.fernando.commons.dto.ReservasRequest;
-import com.fernando.commons.dto.ReservasResponse;
+import com.fernando.commons.dto.*;
+import com.fernando.commons.enums.EstadoRegistro;
 import com.fernando.commons.enums.EstadoReserva;
 import com.fernando.commons.mappers.CommonMapper;
 import com.fernando.reservas.entities.Reserva;
@@ -16,7 +16,7 @@ public class ReservasMapper implements CommonMapper<ReservasRequest, ReservasRes
 
     @Override
     public Reserva requestAEntidad(ReservasRequest request) {
-        if (request == null) return null;
+        if(request == null)return null;
 
         return Reserva.builder()
                 .idHuesped(request.idHuesped())
@@ -24,6 +24,7 @@ public class ReservasMapper implements CommonMapper<ReservasRequest, ReservasRes
                 .fechaEntrada(request.fechaEntrada())
                 .fechaSalida(request.fechaSalida())
                 .estadoReserva(EstadoReserva.CONFIRMADA)
+                .estadoRegistro(EstadoRegistro.ACTIVO)
                 .build();
     }
 
@@ -33,11 +34,42 @@ public class ReservasMapper implements CommonMapper<ReservasRequest, ReservasRes
 
         return new ReservasResponse(
                 entidad.getId(),
-                entidad.getIdHuesped(),
-                entidad.getIdHabitacion(),
+                null,
+                null,
                 entidad.getFechaEntrada(),
                 entidad.getFechaSalida(),
-                entidad.getEstadoReserva().getDescripcion()
-        );
+                entidad.getEstadoReserva().getDescripcion());
+    }
+
+    public ReservasResponse entidadAResponse(Reserva entidad, HuespedResponse huesped, HabitacionResponse habitacion) {
+        if (entidad == null) return null;
+
+        return new ReservasResponse(
+                entidad.getId(),
+                this.huespedResponseADatosHuesped(huesped),
+                this.habitacionResponseADatosHabitacion(habitacion),
+                entidad.getFechaEntrada(),
+                entidad.getFechaSalida(),
+                entidad.getEstadoReserva().getDescripcion());
+    }
+
+    private DatosHuesped huespedResponseADatosHuesped(HuespedResponse huesped){
+        if(huesped == null) return null;
+
+        return new DatosHuesped(
+                huesped.nombre(),
+                huesped.email(),
+                huesped.telefono(),
+                huesped.nacionalidad());
+    }
+
+    private DatosHabitacion habitacionResponseADatosHabitacion(HabitacionResponse habitacion){
+        if(habitacion == null) return null;
+
+        return new DatosHabitacion(
+                habitacion.numero().toString(),
+                habitacion.tipo(),
+                habitacion.precio().toString(),
+                habitacion.capacidad().toString());
     }
 }

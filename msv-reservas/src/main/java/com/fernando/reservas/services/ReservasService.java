@@ -8,5 +8,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface ReservasService extends CrudService<ReservasRequest, ReservasResponse> {
-    ReservasResponse actualizarEstado(Long idReserva, Long idEstado);
+    //ReservasResponse actualizarEstado(Long idReserva, Long idEstado);
+
+    void actualizarEstadoReservacion(Long idReservas, Long idEstadoReservacion);
+    void huespedTieneReservacionesAsignadas(Long idAHuesped);
+    void habitacionTieneReservacionAsignadas(Long idHabitacion);
 }

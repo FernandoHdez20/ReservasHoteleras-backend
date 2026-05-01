@@ -70,6 +70,21 @@ public class Reserva {
         }
         this.estadoReserva = EstadoReserva.FINALIZADA;
     }
+
+    public void actualizar(Long idHuesped, Long idHabitacion, Date fechaEntrada, Date fechaSalida) {
+        this.idHuesped = idHuesped;
+        this.idHabitacion = idHabitacion;
+        this.fechaEntrada = fechaEntrada;
+        this.fechaSalida = fechaSalida;
+    }
+
+    public void actualizarFechas(Date fechaSalida) {
+        this.fechaSalida = fechaSalida;
+    }
+
+    public void actualizarEstadoReservacion(EstadoReserva estadoReserva) {
+        this.estadoReserva = estadoReserva;
+    }
 }
 
 
