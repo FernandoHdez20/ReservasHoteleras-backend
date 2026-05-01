@@ -8,10 +8,7 @@ import com.fernando.habitaciones.services.HabitacionService;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Validated
@@ -35,9 +32,9 @@ public class HabitacionController extends CommonController<HabitacionRequest, Ha
     @PutMapping("/{id}/estado/{idEstado}")
     public ResponseEntity<Void> actualizarEstadoHabitacion(
             @PathVariable Long id,
-            @PathVariable Long idEstadoHabitacion
+            @PathVariable Long idEstado
     ) {
-        service.actualizarEstadoHabitacion(id, idEstadoHabitacion);
+        service.actualizarEstadoHabitacion(id, idEstado);
         return ResponseEntity.noContent().build();
     }
 

@@ -80,7 +80,19 @@ public class ReservasServiceImpl implements ReservasService{
     public ReservasResponse actualizar(ReservasRequest request, Long id) {
         Reserva reserva = obtenerReservaOException(id);
         log.info("Actualizando reserva con id: {}", id);
+
+        //No permitir cambio de habitación (regla global)
+        if (request.idHabitacion() != null &&
+                !request.idHabitacion().equals(reserva.getIdHabitacion())) {
+            throw new IllegalStateException("No se permite cambiar la habitación en una reserva existente");
+        }
+
+        // Validar según estado
         validarActualizacionSegunEstado(reserva, request);
+
+        // Guardar cambios
+        reservasRepository.save(reserva);
+
         return reservasMapper.entidadAResponse(reserva);
     }
 
@@ -205,22 +217,59 @@ public class ReservasServiceImpl implements ReservasService{
         habitacionClient.actualizarEstadoHabitacion(idHabitacion, EstadoHabitacion.DISPONIBLE.getCodigo());
     }
 
+    private HuespedResponse obtenerHuespedActivo(Long id) {
+        log.info("Buscando médico activo con id {} en el servicio remoto", id);
+        return huespedClient.obtenerPorId(id);
+
+    }
+
+    private HuespedResponse obtenerHuespedSinEstado(Long id) {
+        log.info("Buscando médico sin estado con id {} en el servicio remoto", id);
+        return huespedClient.obtenerPorIdTodos(id);
+
+    }
+
     private void validarActualizacionSegunEstado(Reserva reserva, ReservasRequest request) {
+
         switch (reserva.getEstadoReserva()) {
+
             case CONFIRMADA -> {
+                //Se pueden modificar ambas fechas
                 validarFechas(request);
+
                 reserva.setFechaEntrada(request.fechaEntrada());
                 reserva.setFechaSalida(request.fechaSalida());
             }
+
             case EN_CURSO -> {
-                //Solo fecha de salida, sin validar fechaEntrada
+
+                // No permitir modificar fecha de entrada
+                if (request.fechaEntrada() != null &&
+                        !request.fechaEntrada().equals(reserva.getFechaEntrada())) {
+                    throw new IllegalStateException(
+                            "No se puede modificar la fecha de entrada en una reserva EN_CURSO"
+                    );
+                }
+
+                //Validar que venga fecha de salida
                 if (request.fechaSalida() == null) {
                     throw new IllegalArgumentException("La fecha de salida es requerida");
                 }
+
+                // Validar coherencia de fechas
+                if (!reserva.getFechaEntrada().before(request.fechaSalida())) {
+                    throw new IllegalArgumentException(
+                            "La fecha de salida debe ser posterior a la fecha de entrada"
+                    );
+                }
+
                 reserva.setFechaSalida(request.fechaSalida());
             }
+
             case FINALIZADA, CANCELADA ->
-                    throw new IllegalStateException("No se puede modificar una reserva en estado " + reserva.getEstadoReserva());
+                    throw new IllegalStateException(
+                            "No se puede modificar una reserva en estado " + reserva.getEstadoReserva()
+                    );
         }
     }
 }

@@ -1,11 +1,12 @@
 spring:
   application:
     name: gateway
-security:
-  oauth2:
-    resourceserver:
-      jwt:
-        jwk-set-uri: http://localhost:9000/oauth2/jwks
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9000/oauth2/jwks
 
   cloud:
     loadbalancer:
@@ -22,17 +23,17 @@ security:
               filters:
                 - StripPrefix=2
 
-            - id: msv-medicos
-              uri: lb://msv-medicos
+            - id: msv-habitaciones
+              uri: lb://msv-habitaciones
               predicates:
-                - Path=/api/medicos/**
+                - Path=/api/habitaciones/**
               filters:
                 - StripPrefix=2
 
-            - id: msv-citas
-              uri: lb://msv-citas
+            - id: msv-reservas
+              uri: lb://msv-reservas
               predicates:
-                - Path=/api/citas/**
+                - Path=/api/reservas/**
               filters:
                 - StripPrefix=2
 

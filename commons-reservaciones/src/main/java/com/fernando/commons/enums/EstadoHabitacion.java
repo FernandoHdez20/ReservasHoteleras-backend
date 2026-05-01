@@ -17,16 +17,17 @@ public enum EstadoHabitacion {
 	
 	private final Long codigo;
 	private final String descripcion;
-	
+
 	public static EstadoHabitacion obtenerEstadoHabitacionPorCodigo(Long codigo) {
-		for(EstadoHabitacion e : values()) {
-			if(e.codigo == codigo) {
+		for (EstadoHabitacion e : values()) {
+			if (e.codigo.equals(codigo)) {
 				return e;
 			}
 		}
-		throw new RecursoNoEncontradoException("Codigo de estado habitación no valido" + codigo);
-		
 
+		throw new RecursoNoEncontradoException(
+				"Codigo de estado habitación no valido " + codigo
+		);
 	}
 	
 	public static EstadoHabitacion obtenerEstadoHabitacionPorDescripcion(String descripcion) {

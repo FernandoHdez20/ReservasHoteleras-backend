@@ -52,7 +52,7 @@ public class Habitacion {
 
     public void eliminar() {
         if (this.estadoHabitacion == EstadoHabitacion.OCUPADA){
-            throw new IllegalArgumentException("No se puede eliminar una habitación ocupada");
+            throw new IllegalStateException("No se puede eliminar una habitación ocupada");
         }
 
         this.estadoRegistro = EstadoRegistro.ELIMINADO;
